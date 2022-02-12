@@ -34,11 +34,14 @@ class Parser {
     }
 
     /**
+     * Skips over whitespace and comments, if necessary.
      * Reads the next instruction from the input, and makes it the current instruction.
      * This method should be called only if {@link #hasMoreLines() hasMoreLines} is true.
      * Initially there is no current instruction.
      */
     void advance() {
-        inst = sc.nextLine();
+        do {
+            inst = sc.nextLine().replaceFirst("//.+", "").trim();
+        } while (inst.equals("") || inst.startsWith("//"));
     }
 }
