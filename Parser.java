@@ -44,4 +44,25 @@ class Parser {
             inst = sc.nextLine().replaceFirst("//.+", "").trim();
         } while (inst.equals("") || inst.startsWith("//"));
     }
+
+    /**
+     * Returns the type of the current instruction:
+     *
+     * @return  {@link InstructionType#A_INSTRUCTION A_INSTRUCTION} for <code>@xxx</code>, where <code>xxx</code> is
+     *          either a decimal number or a symbol.
+     *          {@link InstructionType#C_INSTRUCTION C_INSTRUCTION} for <code>dest=comp;jump</code>
+     */
+    InstructionType instructionType() {
+        return inst.startsWith("@") ? InstructionType.A_INSTRUCTION : InstructionType.C_INSTRUCTION;
+    }
+
+    /**
+     * If the current instruction is <code>@xxx</code>, returns decimal <code>xxx</code> (as a string).
+     * Should be called only if {@link #instructionType() instructionType} is {@link InstructionType#A_INSTRUCTION A_INSTRUCTION}.
+     *
+     * @return  the instruction's symbol (string)
+     */
+    String symbol() {
+        return inst.substring(1);
+    }
 }

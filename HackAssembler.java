@@ -18,7 +18,12 @@ class HackAssembler {
                 Parser parser = new Parser(new File(args[0]));
                 while (parser.hasMoreLines()) {
                     parser.advance();
-                    fileWriter.write(parser.inst + "\r\n");
+                    switch (parser.instructionType()) {
+                        case A_INSTRUCTION: fileWriter.write(String.format("%16s", Integer.toBinaryString(Integer.parseInt(parser.symbol()))).replaceAll(" ", "0") + "\r\n");
+                                            break;
+                        default:            fileWriter.write(parser.inst + "\r\n");
+                                            break;
+                    }
                 }
                 fileWriter.close();
             } else {
