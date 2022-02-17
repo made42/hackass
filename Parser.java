@@ -65,4 +65,38 @@ class Parser {
     String symbol() {
         return inst.substring(1);
     }
+
+    /**
+     * Returns the symbolic <code>dest</code> part of the current C-instruction (8 possibilities).
+     * Should be called only if {@link #instructionType() instructionType} is {@link InstructionType#C_INSTRUCTION C_INSTRUCTION}.
+     *
+     * @return  the instruction's <code>dest</code> field
+     */
+    String dest() {
+        return inst.contains("=") ? inst.substring(0, inst.indexOf("=")) : null;
+    }
+
+    /**
+     * Returns the symbolic <code>jump</code> part of the current C-instruction (28 possibilities).
+     * Should be called only if {@link #instructionType() instructionType} is {@link InstructionType#C_INSTRUCTION C_INSTRUCTION}.
+     *
+     * @return  the instruction's <code>comp</code> field
+     */
+    String comp() {
+        if (dest() == null && jump() == null) return inst;
+        if (dest() == null && jump() != null) return inst.substring(0, inst.indexOf(";"));
+        if (dest() != null && jump() == null) return inst.substring(inst.indexOf("=") + 1);
+        if (dest() != null && jump() != null) return inst.substring(inst.indexOf("="), inst.indexOf(";"));
+        return null;
+    }
+
+    /**
+     * Returns the symbolic <code>jump</code> part of the current C-instruction (8 possibilities).
+     * Should be called only if {@link #instructionType() instructionType} is {@link InstructionType#C_INSTRUCTION C_INSTRUCTION}.
+     *
+     * @return  the instruction's <code>jump</code> field
+     */
+    String jump() {
+        return inst.contains(";") ? inst.substring(inst.indexOf(";") + 1) : null;
+    }
 }

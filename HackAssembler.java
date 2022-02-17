@@ -21,6 +21,8 @@ class HackAssembler {
                     switch (parser.instructionType()) {
                         case A_INSTRUCTION: fileWriter.write(String.format("%16s", Integer.toBinaryString(Integer.parseInt(parser.symbol()))).replaceAll(" ", "0") + "\r\n");
                                             break;
+                        case C_INSTRUCTION: fileWriter.write("111" + Code.comp(parser.comp()) + Code.dest(parser.dest()) + Code.jump(parser.jump()) + "\r\n");
+                                            break;
                         default:            fileWriter.write(parser.inst + "\r\n");
                                             break;
                     }
