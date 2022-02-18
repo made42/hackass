@@ -51,19 +51,26 @@ class Parser {
      * @return  {@link InstructionType#A_INSTRUCTION A_INSTRUCTION} for <code>@xxx</code>, where <code>xxx</code> is
      *          either a decimal number or a symbol.
      *          {@link InstructionType#C_INSTRUCTION C_INSTRUCTION} for <code>dest=comp;jump</code>
+     *          {@link InstructionType#L_INSTRUCTION L_INSTRUCTION} for <code>(xxx)</code>, where <code>xxx</code> is a
+     *          symbol.
      */
     InstructionType instructionType() {
-        return inst.startsWith("@") ? InstructionType.A_INSTRUCTION : InstructionType.C_INSTRUCTION;
+        if (inst.startsWith("@")) return InstructionType.A_INSTRUCTION;
+        if (inst.startsWith("(")) return InstructionType.L_INSTRUCTION;
+        return InstructionType.C_INSTRUCTION;
     }
 
     /**
+     * If the current instruction is <code>(xxx)</code>, returns the symbol <code>xxx</code>.
      * If the current instruction is <code>@xxx</code>, returns decimal <code>xxx</code> (as a string).
-     * Should be called only if {@link #instructionType() instructionType} is {@link InstructionType#A_INSTRUCTION A_INSTRUCTION}.
+     * Should be called only if {@link #instructionType() instructionType} is {@link InstructionType#A_INSTRUCTION A_INSTRUCTION} or {@link InstructionType#L_INSTRUCTION L_INSTRUCTION}.
      *
      * @return  the instruction's symbol (string)
      */
     String symbol() {
-        return inst.substring(1);
+        if (instructionType() == InstructionType.A_INSTRUCTION) return inst.substring(1);
+        if (instructionType() == InstructionType.L_INSTRUCTION) return inst.substring(1, inst.length() - 1);
+        return null;
     }
 
     /**
