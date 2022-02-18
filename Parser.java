@@ -11,7 +11,7 @@ import java.util.Scanner;
 class Parser {
 
     private final Scanner sc;
-    String inst;
+    private String inst;
 
     /**
      * Opens the input file/stream and gets ready to parse it.

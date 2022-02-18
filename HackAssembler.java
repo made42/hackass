@@ -16,6 +16,8 @@ class HackAssembler {
     static Parser parser;
     static SymbolTable symbolTable;
 
+    static int address;
+
     public static void main(String[] args) throws Exception {
         if (args.length == 1) {
             if (args[0].endsWith(".asm")) {
@@ -63,6 +65,7 @@ class HackAssembler {
         symbolTable.addEntry("ARG", 2);
         symbolTable.addEntry("THIS", 3);
         symbolTable.addEntry("THAT", 4);
+        address = 16;
     }
 
     /**
@@ -82,9 +85,11 @@ class HackAssembler {
     }
 
     /**
+     * (starts again from the beginning of the file)
      * While there are more lines to process:
      *  Gets the next instruction, and parses it
      *  If the instruction is <code>@symbol</code>
+     *      If <code>symbol</code> is not in the symbol table, adds it
      *      Translate the <code>symbol</code> to its binary value
      *  If the instruction is <code>dest=comp;jump</code>
      *      Translates each of the three fields into its binary value
@@ -99,14 +104,24 @@ class HackAssembler {
         while (parser.hasMoreLines()) {
             parser.advance();
             switch (parser.instructionType()) {
-                case A_INSTRUCTION: fileWriter.write(String.format("%16s", Integer.toBinaryString(Integer.parseInt(parser.symbol()))).replaceAll(" ", "0") + "\r\n");
+                case A_INSTRUCTION: fileWriter.write(handleAinstruction() + "\r\n");
                                     break;
                 case C_INSTRUCTION: fileWriter.write("111" + Code.comp(parser.comp()) + Code.dest(parser.dest()) + Code.jump(parser.jump()) + "\r\n");
-                                    break;
-                default:            fileWriter.write(parser.inst + "\r\n");
                                     break;
             }
         }
         fileWriter.close();
+    }
+
+    static String handleAinstruction() {
+        String symbol = parser.symbol();
+        if (!symbol.matches("-?\\d+")) {
+            if (!symbolTable.contains(symbol)) {
+                symbolTable.addEntry(symbol, address);
+                address++;
+            }
+            symbol = String.valueOf(symbolTable.getAddress(symbol));
+        }
+        return String.format("%16s", Integer.toBinaryString(Integer.parseInt(symbol))).replaceAll(" ", "0");
     }
 }

@@ -27,4 +27,24 @@ class SymbolTable {
     void addEntry(String symbol, int address) {
         st.put(symbol, address);
     }
+
+    /**
+     * Does the symbol table contain the given <code>symbol</code>?
+     *
+     * @param symbol
+     * @return
+     */
+    boolean contains(String symbol) {
+        return st.get(symbol) != null;
+    }
+
+    /**
+     * Returns the address associated with the <code>symbol</code>.
+     *
+     * @param symbol
+     * @return          the address (int) associated with symbol
+     */
+    int getAddress(String symbol) {
+        return st.get(symbol);
+    }
 }
